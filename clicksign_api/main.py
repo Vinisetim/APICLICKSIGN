@@ -4,14 +4,16 @@ from pathlib import Path
 #---------------- Variáveis Globais ----------------#
 url_envelope = "https://sandbox.clicksign.com/api/v3/envelopes"
 
+
 headers = {
-    "accept": "application/json",
-    "content-type": "application/vnd.api+json",
-    "authorization": "a49cd34f-17b1-414a-b622-ea8c54829e5c",
+    "Accept": "application/json",
+    "Content-Type": "application/vnd.api+json",
+    "Authorization": "a49cd34f-17b1-414a-b622-ea8c54829e5c"
 }
 
+
 basedir= Path(__file__).resolve().parent
-arquivo = basedir / "Documento" / "documento.docx"
+caminho = basedir / "Documento" / "documento.pdf"
 
 
 #criar envelopoes
@@ -59,34 +61,49 @@ def ativar_envelope(envelope_id):
     # else :
     #     print("Erro ao ativar o rodando")
 
-def gerar_base64():
-    """Converte o arquivo a ser assinado em B64"""
-    with open(arquivo, "rb") as f:
-        return base64.b64encode(f.read()).decode("utf-8")
+def gerar_base64_pdf():
+    if caminho.exists():
+        with open(caminho, "rb") as f:
+            base64_bytes = base64.b64encode(f.read()).decode("utf-8")
+            print("Caminho gerado com base64")
+            return f"data:application/pdf;base64,{base64_bytes}"
+    else:
+        print("Caminho nao existe")
+        return ""
 
 
-def criar_documento():
-    """Cria o documento no envelope, visualiza o documento do envelope"""
-    url = f"https://sandbox.clicksign.com/api/v3/envelopes/{obter_id_envelope()}/documents"
-    payload ={
-        "data":{
-            "type":"documents",
-            "attributes":{
-                "filename" : "Multa.pdf",
-                "content_base64": gerar_base64(),
+
+
+def criar_documento(envelope_id):
+    """Cria um documento dentro do envelope"""
+
+    url = f"https://sandbox.clicksign.com/api/v3/envelopes/{envelope_id}/documents"
+    conteudo = gerar_base64_pdf()
+    payload = {
+        "data": {
+            "type": "documents",
+            "attributes": {
+                "filename": "Multa.pdf",
+                "content_base64": conteudo,
             }
         }
     }
+
     response = requests.post(url, json=payload, headers=headers)
+
     if response.status_code == 201:
-        print("Documento no envelope")
+        print("Documento criado no envelope")
     else:
         print("Erro ao criar o documento")
-    
+        print("Status:", response.status_code)
+        print("Resposta:", response.text)
 
-if arquivo.exists():
-    print("Arquivo carregado")
-else: print("Arquivo inexistente")
+
+
+
+
+
 criar_envelope()
-criar_documento()
+id_envelope = obter_id_envelope()
+criar_documento(id_envelope)
 ativar_envelope(obter_id_envelope())
