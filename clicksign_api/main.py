@@ -46,6 +46,7 @@ def obter_id_envelope():
 
 
 def ativar_envelope(envelope_id):
+    """"Função para Ativar o envelope. Só funciona quando passar por todas as etapas"""
     url = f"https://sandbox.clicksign.com/api/v3/envelopes/{envelope_id}/activate"
     response = requests.post(url, headers=headers)
     if response.status_code == 202:
@@ -62,6 +63,7 @@ def ativar_envelope(envelope_id):
     #     print("Erro ao ativar o rodando")
 
 def gerar_base64_pdf():
+    """"Conversão do arquivo da pasta 'Documentos' para base64"""
     if caminho.exists():
         with open(caminho, "rb") as f:
             base64_bytes = base64.b64encode(f.read()).decode("utf-8")
@@ -99,11 +101,20 @@ def criar_documento(envelope_id):
         print("Resposta:", response.text)
 
 
+def listar_signatarios():
+    """"Lista os signatários presentes no envelope"""
+    url = f"https://sandbox.clicksign.com/api/v3/envelopes/{id_envelope}/signers"
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        print(response.json())
+    elif response.status_code == 404:
+        print("Erro ao listar os envelopes")
 
 
 
-
-criar_envelope()
-id_envelope = obter_id_envelope()
-criar_documento(id_envelope)
-ativar_envelope(obter_id_envelope())
+if __name__ == "__main__":
+    id_envelope = obter_id_envelope()
+    criar_documento(id_envelope)
+    criar_envelope()
+    criar_documento(id_envelope)
+    ativar_envelope(obter_id_envelope())
