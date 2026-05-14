@@ -1,5 +1,4 @@
-
- Planejamento – Integração Clicksign (API v1)
+# Planejamento – Integração Clicksign (API v1)
 
 ## Objetivo
 Desenvolver e validar um script em Python para integração com a API da Clicksign (v1), com foco em testes iniciais e posterior implementação em produção para assinatura de múltiplas multas.
@@ -27,21 +26,21 @@ Adicionar documentos ao envelope.
 
 ---
 
-### 3. Signatários ⬜
+### 3. Signatários ✅
 Gerenciar as pessoas que irão assinar o documento.
 
 - Criar signatário  
-**Status:** ⬜ Pendente
+**Status:** ✅ Concluído
 
 ---
 
-### 4. Requisitos de Assinatura ⬜
+### 4. Requisitos de Assinatura ✅
 Definir critérios de validação da assinatura.
 
 - Qualificação do documento
 - Autenticação por e-mail
 - Autenticação por telefone  
-**Status:** ⬜ Pendente
+**Status:** ✅ Concluído
 
 ---
 
@@ -65,8 +64,10 @@ Notificar signatários sobre documentos pendentes de assinatura.
 ### 7. Encerramento dos Testes ⬜
 Concluir validações e iniciar planejamento da implementação real.
 
-- Avaliar fluxo completo de assinatura
+- Validar o fluxo completo (envelope → documento → signatário → requisitos → ativação)
 - Planejar assinatura de múltiplas multas
-- Definir configuração ideal de cada etapa  
-**Status:** ⬜ Planejado
-``
+- Definir estratégia de reutilização de funções
+- Estruturar controle de erros e logs  
+**Status:** ⬜ Em andamento
+
+---
