@@ -29,15 +29,20 @@ def main():
     if not envelope_id:
         return
 
-    document_id = criar_documento(envelope_id)
-    if not document_id:
-        return
-
     signer_id = adicionar_signatario(envelope_id)
     if not signer_id:
         return
 
+    document_id = criar_documento(envelope_id, signer_id)
+    if not document_id:
+        return
+
     criar_requisitos(envelope_id, document_id, signer_id)
+
+    url = f"{BASE_URL}/envelopes/{envelope_id}/documents"
+    response = requests.get(url, headers=HEADERS)
+
+    print(response.json())
 
     ativar_envelope(envelope_id)
 

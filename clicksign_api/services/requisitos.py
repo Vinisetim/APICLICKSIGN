@@ -10,7 +10,7 @@ def criar_requisitos(envelope_id, document_id, signer_id):
             "type": "requirements",
             "attributes": {
                 "action": "agree",
-                "role": "sign"
+                "role": "signer1"
             },
             "relationships": {
                 "document": {
