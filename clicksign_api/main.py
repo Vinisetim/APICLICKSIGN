@@ -1,3 +1,4 @@
+
 import requests
 import base64
 from pathlib import Path
@@ -32,6 +33,12 @@ def criar_envelope():
     elif response.status_code == 400:
         print("Erro ao criar o envelope")
     return None
+
+def detalhes_envelope():
+    url = f"https://sandbox.clicksign.com/api/v3/envelopes/{id_envelope}"
+
+    response = requests.get(url, headers=headers)
+    print(response.text)
 
 def ativar_envelope():
     """"Função para Ativar o envelope. Só funciona quando passar por todas as etapas"""
@@ -119,17 +126,18 @@ def adicionar_signatario():
         }
     }
 }
-    payload = json.dumps(payload)
-    response = requests.post(url, data=payload, headers=headers)
+
+    response = requests.post(url, data=json.dumps(payload), headers=headers)
 
     if response.status_code ==  201:
         data = response.json()
         nome = data["data"]["attributes"]["name"]
         email = data["data"]["attributes"]["email"]
-        id= data["data"]["id"]
+        identificador = data["data"]["id"]
         print(f"Signaário {nome} Adicionado no envelope {id_envelope} com o email {email}")
         print(response.text)
-        return id
+        print(identificador)
+        return identificador
     else:
         print("Erro ao adicionar o signatario no envelope")
         print("Status:", response.status_code)
@@ -164,8 +172,7 @@ def criar_requisito():
             }
         }
     }
-    payload_qualifica = json.dumps(payload_qualifica)
-    response = requests.post(url, data=payload_qualifica, headers=headers)
+    response = requests.post(url, json=payload_qualifica, headers=headers)
 
     payload_autentica = {
     "data": {
@@ -190,8 +197,7 @@ def criar_requisito():
         }
     }
 }
-    payload_autentica = json.dumps(payload_autentica)
-    request2 = requests.post(url, data=payload_autentica, headers=headers)
+    request2 = requests.post(url, json=payload_autentica, headers=headers)
 
     if response.status_code == 201:
         print("Requisito de qualificação criado no envelope")
@@ -199,12 +205,55 @@ def criar_requisito():
         print("requisito de autenticacao no envelope")
 
 
+def notificar_signatario():
+    """Função para notificar o signatario que existem documentos a serem assinados"""
+
+    url = f"https://sandbox.clicksign.com/api/v3/envelopes/{id_envelope}/signers/{id_signatario}/notifications"
+
+    payload = "{\"data\":{\"type\":\"notifications\",\"attributes\":{\"email_customization\":{\"subject\":\"Qualquer Coisa\",\"head\":\"Qualquer Coisa\",\"greeting\":\"Qualquer Coisa\",\"principal\":\"Qualquer Coisa\",\"button\":\"Qualquer Coisa\",\"final\":\"Qualquer Coisa\",\"align\":\"justify\",\"show_token\":true,\"show_qrcode\":true,\"show_details\":true}}}}"
+
+
+    response = requests.post(url, data= payload, headers=headers)
+    if response.status_code == 200:
+        print("Configuração de notificação finalizada")
+        print(response.status_code)
+    else:
+        print("Erro ao notificar Signatario Status:", response.status_code, response.text)
+
+
+def listar_requisitos():
+    url = f"https://sandbox.clicksign.com/api/v3/envelopes/{id_envelope}/requirements"
+    response = requests.get(url, headers=headers)
+    data = response.json()
+
+    print("IDs dos requisitos:")
+    for req in data["data"]:
+        print(req["id"])
+        return req["id"]
+    return None
+
+
+def ver_requirement():
+    url = f"https://sandbox.clicksign.com/api/v3/envelopes/{id_envelope}/requirements/{requirement_id}"
+    response = requests.get(url, headers=headers)
+    print(response.json())
+
 
 if __name__ == "__main__":
+    #Cria o envelope e o documento salvando seus IDs
     id_envelope = criar_envelope()
     id_documento = criar_documento()
     print("id Documento: ", id_documento)
+
+    #Cria e adiciona signatario no documento criado salvando seu ID
     id_signatario = adicionar_signatario()
     print("id Signatario",id_signatario)
+
+    #Cria requisito de autenticação e qualificação no documento, vinculando signatário e documento
     criar_requisito()
+    requirement_id = listar_requisitos()
+    ver_requirement()
+    #Ativa o envelope
+    detalhes_envelope()
     ativar_envelope()
+    notificar_signatario()
