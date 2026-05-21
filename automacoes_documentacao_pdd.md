@@ -17,9 +17,11 @@ Utilizar a tabela com a lista normalizada de documentos solicitados pelo advogad
 são do kit admissional e quais são do demissional e separar os documentos listados pelo advogado com base nelas (os documentos vem listados por extenso). Deve ser feito um cruzamento para definir que essa linha de solicitação pertence 
 a qual colaborador através da matrícula .
 
-## passo 2: Com a tabela normalizada, criar uma coluna de verificação de status desse documento em específico. A verificação atual será baseada no  princípio que, a maioria dos documentos não estão normalizados para serem reconhecidos na 
+## passo 2: 
+Com a tabela normalizada, criar uma coluna de verificação de status desse documento em específico. A verificação atual será baseada no  princípio que, a maioria dos documentos não estão normalizados para serem reconhecidos na 
 base de dados ou literalmente não estão em nenhuma base. Portanto, todos serão dados como pendentes a primeiro momento (a partir de uma normalização maior, será adicionada futuramente uma etapa de verificação real que pode dizer se o 
 documento existe na base e o modelo atual rodará sem por questão de urgência).
 
-## passo 3: A partir de uma tabela que identifique as informações de: colaborador, matricula, data de vencimento (provavelmente baseada na auditoria), tipo de documentação (coluna para admissional ou demissional), contendo uma linha por
+## passo 3: 
+A partir de uma tabela que identifique as informações de: colaborador, matricula, data de vencimento (provavelmente baseada na auditoria), tipo de documentação (coluna para admissional ou demissional), contendo uma linha por
 documento. Fazer uma automação simples para envio de email notificando a garagem responsável da ausência desse documento, destacando a data de vencimento como um motivo de urgência.
