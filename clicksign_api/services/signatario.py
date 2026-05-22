@@ -13,9 +13,10 @@ def adicionar_signatario(envelope_id, nome = "Vinicius Santos", email = "viniciu
                 "refusable": False,
                 "group": 1,
                 "location_required_enabled": False,
+
                 "communicate_events": {
-                    "signature_request": "none",
-                    "signature_reminder": "none",
+                    "signature_request": "email",
+                    "signature_reminder": "email",
                     "document_signed": "email"
                 },
                 "name": nome,

@@ -10,24 +10,15 @@ def criar_requisitos(envelope_id, document_id, signer_id):
             "type": "requirements",
             "attributes": {
                 "action": "agree",
-                "role": "signer1"
+                "role": "sign"
             },
             "relationships": {
-                "document": {
-                    "data": {
-                        "type": "documents",
-                        "id": document_id
-                    }
-                },
-                "signer": {
-                    "data": {
-                        "type": "signers",
-                        "id": signer_id
-                    }
-                }
+                "document": {"data": {"type": "documents", "id": document_id}},
+                "signer": {"data": {"type": "signers", "id": signer_id}}
             }
         }
     }
+
     response = requests.post(url, json=payload_qualifica, headers=HEADERS)
 
     payload_autentica = {

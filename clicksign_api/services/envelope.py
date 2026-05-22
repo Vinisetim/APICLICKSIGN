@@ -20,7 +20,9 @@ def criar_envelope():
     response = requests.post(url, json=payload, headers=HEADERS)
 
     if response.status_code == 201:
-        return response.json()["data"]["id"]
+        identificador = response.json()["data"]["id"]
+        name = response.json()["data"]["attributes"]["name"]
+        return identificador, name
 
     print("Erro ao criar envelope:", response.status_code, response.text)
     return None

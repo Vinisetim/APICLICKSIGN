@@ -13,7 +13,9 @@ def notificar(envelope_id, signer_id):
 
     response = requests.post(url, json=payload, headers=HEADERS)
 
-    if response.status_code == 200:
-        print("Notificado ✅")
+    if response.status_code in (200, 201):
+        print("Notificado")
+        print(response.status_code)
     else:
         print("Erro notificar:", response.text)
+        print(response.status_code)
