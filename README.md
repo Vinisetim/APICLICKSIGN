@@ -1,73 +1,83 @@
-# Planejamento – Integração Clicksign (API v1)
+# Multas ClickSign — Automação de Vale (Clicksign API v3)
 
-## Objetivo
-Desenvolver e validar um script em Python para integração com a API da Clicksign (v1), com foco em testes iniciais e posterior implementação em produção para assinatura de múltiplas multas.
+Este repositório contém uma automação em **Python** para integração com a **Clicksign API v3 (Sandbox)**, com foco em **gerar um Vale (documento)** a partir de um **template Clicksign** e montar o fluxo técnico de assinatura:
+**envelope → documento (via template) → signatário → requisitos**. 
 
----
-
-## Etapas do Desenvolvimento
-
-### 1. Envelope ✅
-Responsável por agrupar documentos e participantes do fluxo de assinatura.
-
-- Criar envelope
-- Configurar envelope
-- Armazenar o `ID` para uso em endpoints futuros  
-**Status:** ✅ Concluído
+>  Estado atual (resumo): o fluxo técnico já está funcional para criar o Vale via template e montar os requisitos.
+> Ainda NÃO existe a implementação completa de negócio para:
+> - criar um registro “vale por vale” no banco interno;
+> - identificar/vincular o **responsável pela multa** ao Vale;
+> - disparar a **notificação do responsável** de forma integrada ao processo de multas.
 
 ---
 
-### 2. Documento ✅
-Adicionar documentos ao envelope.
+##  Estado atual do projeto (maio/2026)
 
-- Converter arquivo para Base64
-- Anexar documento ao envelope  
-**Status:** ✅ Concluído
+###  O que já funciona
+- **Envelope**: criação e consulta de detalhes do envelope (ID armazenado para as próximas etapas).
+- **Documento (Vale) via Template**: criação de documento usando **template Clicksign** (DOCX) com tags de assinatura.
+- **Signatário**: criação do signatário com configuração compatível com o template.
+- **Requisitos**:
+  - requisito de assinatura (`agree`)
+  - requisito de autenticação (`provide_evidence`, ex.: e-mail)
+- **Ativação do envelope**: atualização de `status` para `running` após requisitos completos.
+- **Notificação** : envio de notificação de solicitação de assinatura após ativação.
+  - A resposta da API retorna um `summary` com `notified: true` para os signatários notificados.
+
+###  Notificações (como funciona)
+As notificações via API devem ser executadas **após o envelope estar em `running`**.  
+Elas são entregues ao signatário pelo canal configurado em `communicate_events.signature_request`.  
+
+> Observação: existe rate-limit de **1 notificação por minuto por endpoint**.
+
+>  Observação: a ativação é a etapa mais sensível e depende do alinhamento entre tag do template, `key` do signatário e `role` do requisito.
+
+###  Parcial / em consolidação
+- **Notificação**: existe implementação do endpoint de notificação, mas:
+  - o fluxo “notificar o responsável pela multa” ainda não está integrado ao processo de negócio;
+  - e o `signer` pode estar configurado com `signature_request: "none"` (sem canal de envio) dependendo do módulo/versão em uso.
+
+###  Ainda não implementado (lacunas de negócio)
+- **Persistência em banco (Vale por Vale)**:
+  - criar/atualizar um registro por multa (rastreabilidade) com IDs gerados (`envelope_id`, `document_id`, `signer_id`, requirements etc.) e status do processo.
+- **Vinculação ao responsável pela multa**:
+  - identificar quem é o responsável na base interna e criar/vincular esse signatário ao Vale.
+
+
+##  Regra crítica do Template (tag ↔ key ↔ role)
+
+Para a assinatura aparecer corretamente e o envelope ativar sem erro, **três valores precisam estar alinhados**:
+
+- **Tag no DOCX**: `{{~position_sign_signer1}}`
+- **Signer.key**: `signer1`
+- **Requirement.role**: `signer1`
+
+Se qualquer um deles divergir, o envelope pode ser criado, mas a ativação e/ou assinatura podem falhar.
+
+---
+
+##  Estrutura do projeto
+
+- `main.py` — orquestra o fluxo (sem payloads complexos)
+- `config.py` — URL base, headers, token e constantes (ex.: template)
+- `clicksign_api/services/`
+  - `envelope.py`
+  - `documento.py`
+  - `signatario.py`
+  - `requisitos.py`
+  - `notificacao.py`
+- `clicksign_api/utils/base64_utils.py` — utilitário legado (Base64), apesar do foco atual ser template
+- `clicksign_api/testes/teste_main.py` — testes do fluxo
 
 ---
 
-### 3. Signatários ✅
-Gerenciar as pessoas que irão assinar o documento.
+##  Requisitos
 
-- Criar signatário  
-**Status:** ✅ Concluído
+- Python 3.x
+- `requests`
+- Conta Clicksign **Sandbox**
+- Template Clicksign publicado com tags de assinatura (`{{~position_sign_*}}`)
 
----
-
-### 4. Requisitos de Assinatura ✅
-Definir critérios de validação da assinatura.
-
-- Qualificação do documento
-- Autenticação por e-mail
-- Autenticação por telefone  
-**Status:** ✅ Concluído
-
----
-
-### 5. Observadores (Opcional) ⬜
-Adicionar entidades que não assinam, mas acompanham o processo.
-
-- Configurar observadores
-- Definir notificações  
-**Status:** ⬜ Opcional
-
----
-
-### 6. Notificações ⬜
-Notificar signatários sobre documentos pendentes de assinatura.
-
-- Enviar notificação ao signatário  
-**Status:** ⬜ Pendente
-
----
-
-### 7. Encerramento dos Testes ⬜
-Concluir validações e iniciar planejamento da implementação real.
-
-- Validar o fluxo completo (envelope → documento → signatário → requisitos → ativação)
-- Planejar assinatura de múltiplas multas
-- Definir estratégia de reutilização de funções
-- Estruturar controle de erros e logs  
-**Status:** ⬜ Em andamento
-
----
+Instale dependências:
+```bash
+pip install -r requirements.txt
