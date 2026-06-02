@@ -1,5 +1,8 @@
 from clicksign_api.services.planilha import ler_multas
 from pathlib import Path
+from clicksign_api.services.envelope import criar_envelope
+from clicksign_api.services.signatario import adicionar_signatario
+
 
 
 def main():
@@ -11,6 +14,20 @@ def main():
     print(f"Total de multas para enviar: {len(multas)}")
 
     for multa in multas:
+        nome_envelope = f"Multa{multa['AIT']}- {multa['motorista']}"
+
+        print(f"Nome do envelope: {nome_envelope}")
+
+        envelope_id,envelope_name = criar_envelope(nome_envelope)
+
+        signer_id = adicionar_signatario(
+            envelope_id = envelope_id,
+            nome= multa['motorista'],
+            email="viniciusgueimis@gmail.com",
+        )
+        print(f"Signer id: {signer_id}")
+
+
         print(f"AIT: {multa['AIT']} ")
         print(f"Motorista: {multa['motorista']} ")
         print(f"Telefone: {multa['telefone']}")

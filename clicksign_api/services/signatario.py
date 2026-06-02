@@ -1,7 +1,7 @@
 import requests
 from clicksign_api.config import BASE_URL, HEADERS
 
-def adicionar_signatario(envelope_id, nome = "Vinicius Santos", email = "viniciusgueimis@gmail.com"):
+def adicionar_signatario(envelope_id, nome, email):
 
     url = f"{BASE_URL}/envelopes/{envelope_id}/signers"
 
@@ -19,7 +19,7 @@ def adicionar_signatario(envelope_id, nome = "Vinicius Santos", email = "viniciu
                     "signature_reminder": "email",
                     "document_signed": "email"
                 },
-                "name": nome,
+                "name": str(nome).strip(),
                 "email": email,
             }
         }
@@ -27,14 +27,22 @@ def adicionar_signatario(envelope_id, nome = "Vinicius Santos", email = "viniciu
 
     response = requests.post(url, json = payload, headers=HEADERS)
 
+
     if response.status_code == 201:
         data = response.json()
-        nome = data["data"]["attributes"]["name"]
-        email = data["data"]["attributes"]["email"]
-        identificador = data["data"]["id"]
-        print(f"Signaário {nome} Adicionado no envelope {envelope_id} com o email {email} e o identificador {identificador}")
 
-        return response.json()["data"]["id"]
+        nome_signatario = data["data"]["attributes"]["name"]
+        email_signatario = data["data"]["attributes"]["email"]
+        signer_id = data["data"]["id"]
 
-    print(f"Erro signer: {response.status_code}")
+        print(
+            f"Signatário {nome_signatario} adicionado ao envelope "
+            f"{envelope_id} com o e-mail {email_signatario}. "
+            f"Signer ID: {signer_id}"
+        )
+
+        return signer_id
+
+
+    print(f"Erro signer: {response.status_code}", response.text)
     return None
