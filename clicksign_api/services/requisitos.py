@@ -27,7 +27,8 @@ def criar_requisitos(envelope_id, document_id, signer_id, role = "sign", auth = 
         print("Status:", response_assinatura.status_code)
         print("Resposta:", response_assinatura.text)
         return None, None
-        requirement_assinatura_id = response_assinatura.json()["data"]["id"]
+
+    requirement_assinatura_id = response_assinatura.json()["data"]["id"]
 
     payload_autenticacao = {
         "data": {
@@ -55,7 +56,15 @@ def criar_requisitos(envelope_id, document_id, signer_id, role = "sign", auth = 
 
     response_autenticacao = requests.post(url, json=payload_autenticacao, headers=HEADERS)
 
-    if response.status_code == 201:
-        print("Requisito de qualificação criado no envelope")
-    if response_autenticacao.status_code == 201:
-        print("requisito de autenticacao no envelope")
+    if response_autenticacao.status_code != 201:
+        print("Erro ao criar requisito de autenticação")
+        print("Status:", response_autenticacao.status_code)
+        print("Resposta:", response_autenticacao.text)
+        return requirement_assinatura_id, None
+
+    requirement_autenticacao_id = response_autenticacao.json()["data"]["id"]
+
+    print(f"Requisito de autenticação criado: {requirement_autenticacao_id}")
+
+    return requirement_assinatura_id, requirement_autenticacao_id
+

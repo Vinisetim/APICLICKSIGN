@@ -2,8 +2,8 @@ from clicksign_api.services.planilha import ler_multas
 from pathlib import Path
 from clicksign_api.services.envelope import criar_envelope
 from clicksign_api.services.signatario import adicionar_signatario
-
-
+from clicksign_api.services.requisitos import criar_requisitos
+from clicksign_api.services.documento import criar_documento
 
 def main():
     base_dir = Path(__file__).resolve().parent
@@ -27,6 +27,21 @@ def main():
         )
         print(f"Signer id: {signer_id}")
 
+        document_id = criar_documento(
+            envelope_id=envelope_id,
+            multa=multa
+        )
+
+        print(f"Document ID: {document_id}")
+
+        requirement_assinatura_id, requirement_autenticacao_id = criar_requisitos(
+            envelope_id = envelope_id,
+            document_id=document_id,
+            signer_id = signer_id,
+        )
+
+        print(f"Requirement assinatura ID: {requirement_assinatura_id}")
+        print(f"Requirement autenticação ID: {requirement_autenticacao_id}")
 
         print(f"AIT: {multa['AIT']} ")
         print(f"Motorista: {multa['motorista']} ")
