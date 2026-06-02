@@ -65,6 +65,7 @@ def criar_requisitos(envelope_id, document_id, signer_id, role = "sign", auth = 
     requirement_autenticacao_id = response_autenticacao.json()["data"]["id"]
 
     print(f"Requisito de autenticação criado: {requirement_autenticacao_id}")
+    print(f"Requisito de assinatura criado: {requirement_assinatura_id}")
 
     return requirement_assinatura_id, requirement_autenticacao_id
 

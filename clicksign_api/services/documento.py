@@ -45,7 +45,7 @@ def formatar_moeda(valor):
         return str(valor).strip()
 
 def montar_dados_template(multa):
-    """Função para montar os dados das variáveis do template"""
+
     dados_template = {
         "AIT": limpar_valor(multa.get("AIT")),
         "DATA_MULTA": formatar_data(multa.get("data_infracao")),
@@ -60,6 +60,7 @@ def montar_dados_template(multa):
     }
 
     return dados_template
+
 
 
 
@@ -89,7 +90,6 @@ def criar_documento(envelope_id, multa):
             }
         }
     }
-
     response = requests.post(url, json=payload, headers=HEADERS)
 
     if response.status_code == 201:
