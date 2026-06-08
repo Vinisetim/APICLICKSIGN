@@ -7,7 +7,7 @@ from clicksign_api.services.signatario import adicionar_signatario
 from clicksign_api.services.requisitos import criar_requisitos
 from clicksign_api.services.documento import criar_documento
 from clicksign_api.services.envelope import ativar_envelope
-
+from clicksign_api.config import EMAIL_TESTE
 
 def main():
     base_dir = Path(__file__).resolve().parent
@@ -27,7 +27,7 @@ def main():
         signer_id = adicionar_signatario(
             envelope_id = envelope_id,
             nome= multa['motorista'],
-            email="viniciusgueimis@gmail.com",
+            email=EMAIL_TESTE,
         )
         print(f"Signer id: {signer_id}")
 

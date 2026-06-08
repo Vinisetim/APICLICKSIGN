@@ -1,10 +1,9 @@
 from datetime import datetime
 import math
 import requests
-from clicksign_api.config import BASE_URL, HEADERS
+from clicksign_api.config import BASE_URL, HEADERS, CLICKSIGN_TEMPLATE_KEY
 
-
-templake_key = "df8c6ebc-5db3-4186-b1ee-cf3cd8fb2a7e"
+templake_key = CLICKSIGN_TEMPLATE_KEY
 
 def limpar_valor(valor):
     """Função para limpar o valor do documento"""
