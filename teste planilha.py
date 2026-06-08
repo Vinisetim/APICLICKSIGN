@@ -1,6 +1,5 @@
 import time
-
-from clicksign_api.services.planilha import ler_multas
+from clicksign_api.services.planilha import ler_multas, validar_multa_processavel, atualizar_status_vale
 from pathlib import Path
 from clicksign_api.services.envelope import criar_envelope
 from clicksign_api.services.signatario import adicionar_signatario
@@ -8,8 +7,10 @@ from clicksign_api.services.requisitos import criar_requisitos
 from clicksign_api.services.documento import criar_documento
 from clicksign_api.services.envelope import ativar_envelope
 from clicksign_api.config import EMAIL_TESTE
+from clicksign_api.services.notificacao import notificar
 
 def main():
+
     base_dir = Path(__file__).resolve().parent
     caminho_planilha = base_dir / "teste_clicksign.xlsx"
 
@@ -18,6 +19,11 @@ def main():
     print(f"Total de multas para enviar: {len(multas)}")
 
     for multa in multas:
+        pode_processar, motivo = validar_multa_processavel(multa)
+        if not pode_processar:
+            print(f"Pulando AIT {multa.get('AIT')} - motivo: {motivo}")
+            continue
+
         nome_envelope = f"Multa{multa['AIT']}- {multa['motorista']}"
 
         print(f"Nome do envelope: {nome_envelope}")
@@ -50,6 +56,18 @@ def main():
         time.sleep(5)
         envelope_ativado = ativar_envelope(envelope_id)
         print(f"Envelope ativado? : {envelope_ativado}")
+        if envelope_ativado:
+                signatario_notificado = notificar(
+                    envelope_id = envelope_id,
+                    signer_id = signer_id,
+                )
+                print(f"Signatario notificado? : {signatario_notificado}")
+                if signatario_notificado:
+                    atualizar_status_vale(
+                        caminho_planilha=caminho_planilha,
+                        ait=multa["AIT"],
+                        novo_status="Enviado"
+                    )
 
 
         print(f"AIT: {multa['AIT']} ")
