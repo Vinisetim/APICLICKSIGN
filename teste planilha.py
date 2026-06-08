@@ -65,7 +65,7 @@ def main():
                 if signatario_notificado:
                     atualizar_status_vale(
                         caminho_planilha=caminho_planilha,
-                        ait=multa["AIT"],
+                        ait=multa['AIT'],
                         novo_status="Enviado"
                     )
 
