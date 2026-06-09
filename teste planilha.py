@@ -6,7 +6,6 @@ from clicksign_api.services.signatario import adicionar_signatario
 from clicksign_api.services.requisitos import criar_requisitos
 from clicksign_api.services.documento import criar_documento
 from clicksign_api.services.envelope import ativar_envelope
-from clicksign_api.config import EMAIL_TESTE
 from clicksign_api.services.notificacao import notificar
 
 def main():
@@ -40,9 +39,13 @@ def main():
         signer_id = adicionar_signatario(
             envelope_id = envelope_id,
             nome= multa['motorista'],
-            email=EMAIL_TESTE,
+            telefone=multa['telefone'],
         )
         print(f"Signer id: {signer_id}")
+
+        if not signer_id:
+            print(f"Pulado AIT {multa.get('AIT')} - Signatario não foi criado")
+            continue
 
         #Usa o template da clicksign para criar o documento desse signatário e guarda o seu ID
         document_id = criar_documento(
