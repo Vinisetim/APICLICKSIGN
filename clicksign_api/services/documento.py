@@ -44,7 +44,7 @@ def formatar_moeda(valor):
         return str(valor).strip()
 
 def montar_dados_template(multa):
-
+    """usa as funções anteriores para criar um mapeamento dos campos do template que serão substituidos"""
     dados_template = {
         "AIT": limpar_valor(multa.get("AIT")),
         "DATA_MULTA": formatar_data(multa.get("data_infracao")),

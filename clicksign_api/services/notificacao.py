@@ -2,6 +2,7 @@ import requests
 from clicksign_api.config import BASE_URL, HEADERS
 
 def notificar(envelope_id, signer_id):
+    """Função para notificar os signatarios. Funciona com o que for definido para o signatario. No caso email ou sms."""
     url = f"{BASE_URL}/envelopes/{envelope_id}/signers/{signer_id}/notifications"
 
     payload = {
