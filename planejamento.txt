@@ -12,4 +12,10 @@ Desenvolvimento de script para conectar api clicksign v1 - testes
 
 6. Notificar (notificar o signatário de que existe um documento para ele assinar) []
 
-7. Conclusão do teste (começar a planejar a implementação real da ferramenta para assinatura de múltiplas multas e como deve ser configurada cada etapa)[]
+7. Conclusão do teste (começar a planejar a implementação real da ferramenta para assinatura de múltiplas multas e como deve ser configurada cada etapa)
+
+Permissões da azure:
+
+Sites.read.all
+Files.read.all
+Sites.ReadWrite.All
