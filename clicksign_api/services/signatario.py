@@ -19,7 +19,7 @@ def adicionar_signatario(envelope_id, nome, telefone):
     """
     url = f"{BASE_URL}/envelopes/{envelope_id}/signers"
 
-    telefone_formatado = formatar_telefone_sms(telefone)
+    telefone_formatado = formatar_telefone(telefone)
 
     payload = {
         "data": {
