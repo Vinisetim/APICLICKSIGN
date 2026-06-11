@@ -7,7 +7,7 @@ def formatar_telefone(telefone):
     Limpa o telefone vindo da planilha, mantendo apenas números.
 
     Exemplo:
-    (11) 97564-9922 -> 11975649922
+    (11) 12345-6789 -> 11123456789
     """
 
     return re.sub(r"\D", "", str(telefone))
