@@ -1,11 +1,25 @@
 import requests
+import re
 from clicksign_api.config import BASE_URL, HEADERS
 
-def adicionar_signatario(envelope_id, nome, email):
+def formatar_telefone(telefone):
+    """
+    Limpa o telefone vindo da planilha, mantendo apenas números.
+
+    Exemplo:
+    (11) 97564-9922 -> 11975649922
+    """
+
+    return re.sub(r"\D", "", str(telefone))
+
+
+def adicionar_signatario(envelope_id, nome, telefone):
     """Usa o endpoint de signatarios com o id do envelope para identificação para adicionar o signatário no envelope.
-    Atualmente usa email como identificador
+    Tentativa de envio de notificação por sms
     """
     url = f"{BASE_URL}/envelopes/{envelope_id}/signers"
+
+    telefone_formatado = formatar_telefone(telefone)
 
     payload = {
         "data": {
@@ -17,16 +31,17 @@ def adicionar_signatario(envelope_id, nome, email):
                 "location_required_enabled": False,
 
                 "communicate_events": {
-                    "signature_request": "email",
-                    "signature_reminder": "email",
-                    "document_signed": "email"
+                    "signature_request": "sms",
+                    "signature_reminder": "none",
+                    "document_signed": "whatsapp"
                 },
                 "name": str(nome).strip(),
-                "email": email,
+                "phone_number": telefone_formatado,
             }
         }
     }
 
+    print("DEBUG payload signatário SMS:", payload)
     response = requests.post(url, json = payload, headers=HEADERS)
 
 

@@ -1,7 +1,7 @@
 import requests
 from clicksign_api.config import BASE_URL, HEADERS
 
-def criar_requisitos(envelope_id, document_id, signer_id, role = "sign", auth = "email"):
+def criar_requisitos(envelope_id, document_id, signer_id, role = "sign", auth = "sms"):
     """Essa função cria um requisito para o envelope, vinculando um documento a um signatario.
     Está separada em duas etapas, uma de autenticação e uma Assinatura, no fim retorna o id dos requisitos.
     """
