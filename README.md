@@ -105,7 +105,7 @@ Os seguintes valores devem estar alinhados:
 
 ---
 
-## ⚙️ Configuração
+## Configuração
 
 Crie um arquivo `.env`:
 
@@ -138,8 +138,4 @@ python main.py
 - Telefones devem estar no formato correto (ex: 11999999999)
 
 
----
-
-## 📄 Licença
-
-Uso livre para fins educacionais e projetos pessoais.
+--
